@@ -7,12 +7,19 @@ Widget::Widget(QWidget *parent)
     , ui(new Ui::Widget)
 {
     ui->setupUi(this);
-//    ui->pbCoffee->setEnabled(false);
+    updateMenuButtons();
 }
 
 Widget::~Widget()
 {
     delete ui;
+}
+
+void Widget::updateMenuButtons()
+{
+    ui->pbCoffee->setEnabled(money >= 100);
+    ui->pbTea->setEnabled(money >= 150);
+    ui->pbMilk->setEnabled(money >= 200);
 }
 
 void Widget::changeMoney(int diff)
@@ -30,43 +37,69 @@ void Widget::on_pb10_clicked()
 void Widget::on_pb50_clicked()
 {
     changeMoney(50);
+    updateMenuButtons();
 }
 
 
 void Widget::on_pb100_clicked()
 {
     changeMoney(100);
+    updateMenuButtons();
 }
 
 
 void Widget::on_pb500_clicked()
 {
     changeMoney(500);
+    updateMenuButtons();
 }
 
 
 void Widget::on_pbCoffee_clicked()
 {
-    changeMoney(-100);
+    if(money >= 100)
+    {
+        changeMoney(-100);
+        updateMenuButtons();
+    }
 }
 
 
 void Widget::on_pbTea_clicked()
 {
-    changeMoney(-150);
+    if(money >= 150)
+    {
+        changeMoney(-150);
+        updateMenuButtons();
+    }
 }
 
 
 void Widget::on_pbMilk_clicked()
 {
-    changeMoney(-200);
+    if(money >= 200)
+    {
+        changeMoney(-200);
+        updateMenuButtons();
+    }
 }
 
 
 void Widget::on_pbReset_clicked()
 {
     QMessageBox mb;
-    mb.information(nullptr, "title", "text");
-
+    QString msg;
+    if (money != 0)
+    {
+        msg = QString("Returned: %1 won").arg(money);
+    }
+    else
+    {
+        msg = QString("Got nothing to return");
+    }
+    mb.information(nullptr, "Change", msg);
+    money = 0;
+    updateMenuButtons();
+    ui->lcdNumber->display(money);
 }
 
